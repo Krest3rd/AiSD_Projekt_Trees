@@ -60,7 +60,18 @@ def ArrayToBST(arr):
         root.insert(i)
     return root
 
-# Tree = ArrayToBST([6,2,8,3,5,4,10,1])
+def ArrayToAVL(arr):
+    arr.sort()
+    mid = len(arr)//2
+    root = TreeNode(arr[mid])
+    if mid != 0:
+        root.left = ArrayToAVL(arr[:mid:])
+    if mid != len(arr)-1:
+        root.right = ArrayToAVL(arr[mid+1::]) 
+    return root
+
+
+# Tree = ArrayToAVL([6,2,8,3,5,4,10,1])
 # Tree.InOrder()
 # print("--------------------------")
 # Tree.PostOrder()
