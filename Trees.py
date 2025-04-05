@@ -25,6 +25,26 @@ class TreeNode:
         print(self.value, end=" ")
         del self
 
+    def remove(self,val):
+        if self is None:
+            return None
+
+        #Search for node
+        if self.value > val:
+            self.left = self.left.remove(val)
+        elif self.value < val:
+            self.right = self.right.remove(val)
+        else:
+            # One child
+            if self.left is None:
+                return self.right
+            elif self.right is None:
+                return self.left
+            
+            self.value = self.right.findMin().value
+
+            self.right = self.right.remove(self.value)
+        return self
 
     def InOrder(self,func=print):
         if self.left:
@@ -55,14 +75,17 @@ class TreeNode:
         return f"node {{{self.value}}} \n{l_str} \n{r_str}"
     
     def findMin(self):
-        if self.left:
-            return self.left.findMin()
-        return self.value
+        root = self
+        while root.left:
+            root = root.left
+        return root
     
     def findMax(self):
-        if self.right:
-            return self.right.findMax()
-        return self.value
+        root = self
+        while root.right:
+            root = root.right
+        return root
+    
 
 class RootNode(TreeNode):
     def Delete(self):
@@ -84,9 +107,12 @@ class RootNode(TreeNode):
         end = "\n\end{tikzpicture}"
         return head + mid + end
     
-    def FindMinMax(self):
-        print("Min: ",self.findMin())
-        print("Max: ",self.findMax())
+    def PrintMinMax(self):
+        print("Min: ",self.findMin().value)
+        print("Max: ",self.findMax().value)
+
+ 
+
 
     
 def ArrayToBST(arr):
@@ -110,4 +136,6 @@ def ArrayToAVL(arr):
 Tree = ArrayToAVL([1, 2, 3, 6, 5, 4, 7])
 Tree.PrintAll()
 print(Tree.Export())
-Tree.FindMinMax()
+Tree.remove(4)
+print(Tree.Export())
+
