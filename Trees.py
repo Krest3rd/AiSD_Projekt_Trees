@@ -17,6 +17,15 @@ class TreeNode:
                 self.right = TreeNode(value)   
         return self
 
+    def delete(self):
+        if self.left:
+            self.left.delete()
+        if self.right:
+            self.right.delete()
+        print(self.value, end=" ")
+        del self
+
+
     def InOrder(self,func=print):
         if self.left:
             self.left.InOrder()
@@ -71,9 +80,12 @@ def ArrayToAVL(arr):
     return root
 
 
-# Tree = ArrayToAVL([6,2,8,3,5,4,10,1])
-# Tree.InOrder()
-# print("--------------------------")
-# Tree.PostOrder()
-# print("--------------------------")
-# Tree.PreOrder()
+
+Tree = ArrayToAVL([1, 2, 3, 6, 5, 4, 7])
+Tree.InOrder()
+print("--------------------------")
+Tree.PostOrder()
+print("--------------------------")
+Tree.PreOrder()
+Tree.delete()
+print(Tree in locals())
