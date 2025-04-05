@@ -46,33 +46,60 @@ class TreeNode:
             self.left.PreOrder()
         if self.right:
             self.right.PreOrder()
-
     
+    def export(self):
+        if not self.left and not self.right:
+            return f"node {{{self.value}}}"
+        l_str = f"child {{{self.left.export()}}}" if self.left else "child[missing]"
+        r_str = f"child {{{self.right.export()}}}" if self.right else "child[missing]"
+        return f"node {{{self.value}}} \n{l_str} \n{r_str}"
+    
+    def findMin(self):
+        if self.left:
+            return self.left.findMin()
+        return self.value
+    
+    def findMax(self):
+        if self.right:
+            return self.right.findMax()
+        return self.value
 
-# class BSTNode(TreeNode):
-#     def insert(self,value):
-#         if value<self.value:
-#             if self.left:
-#                 self.left.insert(value)
-#             else:
-#                 self.left = TreeNode(value)
-#         else:
-#             if self.right:
-#                 self.right.insert(value)
-#             else:
-#                 self.right = TreeNode(value)   
-#         return self
+class RootNode(TreeNode):
+    def Delete(self):
+        print("Deleting: ",end="")
+        self.delete()
+        print("\nTree removed")
+
+    def PrintAll(self):
+        print("Printing in Order")
+        self.InOrder()
+        print("Printing Post Order")
+        self.PostOrder()
+        print("Printing Pre Order")
+        self.PreOrder()
+
+    def Export(self):
+        head = "\\begin{tikzpicture}[\n every node/.style = {minimum width = 2em, draw, circle},\nlevel/.style = {sibling distance = 30mm/#1}\n]\n"
+        mid = f"\\{self.export()}"
+        end = "\n\end{tikzpicture}"
+        return head + mid + end
+    
+    def FindMinMax(self):
+        print("Min: ",self.findMin())
+        print("Max: ",self.findMax())
+
     
 def ArrayToBST(arr):
-    root = TreeNode(arr[0])
+    root = RootNode(arr[0])
     for i in arr[1::]:
         root.insert(i)
     return root
 
+
 def ArrayToAVL(arr):
     arr.sort()
     mid = len(arr)//2
-    root = TreeNode(arr[mid])
+    root = RootNode(arr[mid])
     if mid != 0:
         root.left = ArrayToAVL(arr[:mid:])
     if mid != len(arr)-1:
@@ -80,12 +107,7 @@ def ArrayToAVL(arr):
     return root
 
 
-
 Tree = ArrayToAVL([1, 2, 3, 6, 5, 4, 7])
-Tree.InOrder()
-print("--------------------------")
-Tree.PostOrder()
-print("--------------------------")
-Tree.PreOrder()
-Tree.delete()
-print(Tree in locals())
+Tree.PrintAll()
+print(Tree.Export())
+Tree.FindMinMax()
