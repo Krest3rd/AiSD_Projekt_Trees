@@ -85,7 +85,21 @@ class TreeNode:
         while root.right:
             root = root.right
         return root
-    
+
+    def rotateR(self):
+        temp = self.left.right
+        self.left.right = self
+        self = self.left
+        self.right.left = temp
+        return self
+
+    def rotateL(self):
+        temp = self.right.left
+        self.right.left = self
+        self = self.right
+        self.left.right = temp
+        return self
+
 
 class RootNode(TreeNode):
     def Delete(self):
@@ -102,9 +116,9 @@ class RootNode(TreeNode):
         self.PreOrder()
 
     def Export(self):
-        head = "\\begin{tikzpicture}[\n every node/.style = {minimum width = 2em, draw, circle},\nlevel/.style = {sibling distance = 30mm/#1}\n]\n"
+        head = "Exported tree:------------------\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 2em, draw, circle},\nlevel/.style = {sibling distance = 30mm/#1}\n]\n"
         mid = f"\\{self.export()}"
-        end = "\n\end{tikzpicture}"
+        end = "\n\\end{tikzpicture}\n--------------------------------"
         return head + mid + end
     
     def PrintMinMax(self):
@@ -134,8 +148,9 @@ def ArrayToAVL(arr):
 
 
 Tree = ArrayToAVL([1, 2, 3, 6, 5, 4, 7])
-Tree.PrintAll()
 print(Tree.Export())
-Tree.remove(4)
+Tree = Tree.rotateL()
+# Tree.PrintAll()
+# print(x==Tree)
 print(Tree.Export())
 
