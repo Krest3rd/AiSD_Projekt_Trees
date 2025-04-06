@@ -88,13 +88,11 @@ class TreeNode:
         return root
 
     def tree_to_vine(self):
-        root = self
-        while root.left:
-            root = root.rotateR()
-        if root.right:
-            root.right = root.right.tree_to_vine()
-        print(root.export())
-        return root
+        while self.left:
+            self = self.rotateR()
+        if self.right:
+            self.right = self.right.tree_to_vine()
+        return self
 
     def rotateR(self):
         temp = self.left.right
@@ -111,33 +109,76 @@ class TreeNode:
         return self
 
 
-class RootNode(TreeNode):
-    def Delete(self):
-        print("Deleting: ",end="")
-        self.delete()
-        print("\nTree removed")
+def Delete(root):
+    print("Deleting: ",end="")
+    root.delete()
+    print("\nTree removed")
 
-    def PrintAll(self):
-        print("Printing in Order")
-        self.InOrder()
-        print("Printing Post Order")
-        self.PostOrder()
-        print("Printing Pre Order")
-        self.PreOrder()
 
-    def Export(self):
-        head = "Exported tree:------------------\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 2em, draw, circle},\nlevel/.style = {sibling distance = 30mm/#1}\n]\n"
-        mid = f"\\{self.export()}"
-        end = "\n\\end{tikzpicture}\n--------------------------------"
-        return head + mid + end
+def PrintAll(root):
+    print("Printing in Order")
+    root.InOrder()
+    print("Printing Post Order")
+    root.PostOrder()
+    print("Printing Pre Order")
+    root.PreOrder()
+
+
+def Export(root):
+    head = "Exported tree:------------------\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 2em, draw, circle},\nlevel/.style = {sibling distance = 30mm/#1}\n]\n"
+    mid = f"\\{root.export()}"
+    end = "\n\\end{tikzpicture}\n--------------------------------"
+    return head + mid + end
+
+
+def PrintMinMax(root):
+    print("Min: ",root.findMin().value)
+    print("Max: ",root.findMax().value)
+
+
+def DSW_balance_vine(root):
+    #funkcja wykonująca rotacje
+    def perform_rotations(root, count):
+        if count:
+            print(root.value)
+            root = root.rotateL()
+            root.right = perform_rotations(root.right,count-1)
+
+        return root
     
-    def PrintMinMax(self):
-        print("Min: ",self.findMin().value)
-        print("Max: ",self.findMax().value)
+
+    # count amount of nodes
+    n = 1
+    temp = root
+    while temp.right:
+        n += 1
+        temp = temp.right
+    #Calc number of initial ratations
+    w = (n+1).bit_length()-1
+    s = n+1-2**w
+    print("s =",s)
+    root = perform_rotations(root,s)
+    s = n-s
+    print("s =",s)
+    while s>1:
+        # print(s)
+        # print(Export(root))
+        s //= 2
+        if s == 2:
+            print(Export(root))
+        print("----------------")
+        root = perform_rotations(root,s)
+        print("-------------")
+    return root
+
+
+def Balance(root):
+    root = root.tree_to_vine()
+    return DSW_balance_vine(root)
 
     
 def ArrayToBST(arr):
-    root = RootNode(arr[0])
+    root = TreeNode(arr[0])
     for i in arr[1::]:
         root.insert(i)
     return root
@@ -146,18 +187,23 @@ def ArrayToBST(arr):
 def ArrayToAVL(arr):
     arr.sort()
     mid = len(arr)//2
-    root = RootNode(arr[mid])
+    root = TreeNode(arr[mid])
     if mid != 0:
         root.left = ArrayToAVL(arr[:mid:])
     if mid != len(arr)-1:
         root.right = ArrayToAVL(arr[mid+1::]) 
     return root
 
-
-Tree = ArrayToBST([1, 2, 3, 6, 5, 4, 7])
-print(Tree.Export())
-Tree = Tree.tree_to_vine()
+T = [i for i in range(128,0,-1)]
+Tree = ArrayToBST(T)
+# Tree = ArrayToBST([2,1,4,3])
+print(Export(Tree))
+# Tree.rotateL()
+# print(Export(Tree))
+Tree = Balance(Tree)
+print(Export(Tree))
+# Tree = Tree.balance_vine()
 # Tree.PrintAll()
 # print(x==Tree)
-print(Tree.Export())
+# print(Tree.Export())
 
