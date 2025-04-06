@@ -41,8 +41,9 @@ class TreeNode:
             elif self.right is None:
                 return self.left
             
+            #Find succesor and
             self.value = self.right.findMin().value
-
+            
             self.right = self.right.remove(self.value)
         return self
 
@@ -86,6 +87,15 @@ class TreeNode:
             root = root.right
         return root
 
+    def tree_to_vine(self):
+        root = self
+        while root.left:
+            root = root.rotateR()
+        if root.right:
+            root.right = root.right.tree_to_vine()
+        print(root.export())
+        return root
+
     def rotateR(self):
         temp = self.left.right
         self.left.right = self
@@ -125,9 +135,6 @@ class RootNode(TreeNode):
         print("Min: ",self.findMin().value)
         print("Max: ",self.findMax().value)
 
- 
-
-
     
 def ArrayToBST(arr):
     root = RootNode(arr[0])
@@ -147,9 +154,9 @@ def ArrayToAVL(arr):
     return root
 
 
-Tree = ArrayToAVL([1, 2, 3, 6, 5, 4, 7])
+Tree = ArrayToBST([1, 2, 3, 6, 5, 4, 7])
 print(Tree.Export())
-Tree = Tree.rotateL()
+Tree = Tree.tree_to_vine()
 # Tree.PrintAll()
 # print(x==Tree)
 print(Tree.Export())
