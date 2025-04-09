@@ -113,7 +113,7 @@ class TreeNode:
 
 def Delete(root):
     print("Deleting: ",end="")
-    root.delete()
+    root.deleteAll()
     print("\nTree removed")
 
 
@@ -195,6 +195,3 @@ def ArrayToAVL(arr):
         root.right = ArrayToAVL(arr[mid+1::]) 
     return root
 
-
-Tree = ArrayToAVL([i for i in range(1,128)])
-print(Export(Tree))
