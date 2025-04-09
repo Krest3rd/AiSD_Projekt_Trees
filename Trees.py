@@ -17,13 +17,15 @@ class TreeNode:
                 self.right = TreeNode(value)   
         return self
 
-    def delete(self):
+    def deleteAll(self):
         if self.left:
             self.left.delete()
         if self.right:
             self.right.delete()
         print(self.value, end=" ")
-        del self
+        self.value = None
+        self.right = None
+        self.left = None
 
     def remove(self,val):
         if self is None:
@@ -49,25 +51,25 @@ class TreeNode:
 
     def InOrder(self,func=print):
         if self.left:
-            self.left.InOrder()
+            self.left.InOrder(func)
         func(self.value)
         if self.right:
-            self.right.InOrder()
+            self.right.InOrder(func)
 
     def PostOrder(self,func=print):
         if self.left:
-            self.left.PostOrder()
+            self.left.PostOrder(func)
         if self.right:
-            self.right.PostOrder()
+            self.right.PostOrder(func)
         func(self.value)
     
     def PreOrder(self,func=print):
         func(self.value)
         if self.left:
-            self.left.PreOrder()
+            self.left.PreOrder(func)
         if self.right:
-            self.right.PreOrder()
-    
+            self.right.PreOrder(func)
+
     def export(self):
         if not self.left and not self.right:
             return f"node {{{self.value}}}"
@@ -123,10 +125,16 @@ def PrintAll(root):
     print("Printing Pre Order")
     root.PreOrder()
 
+# def Export(root):
+#     head = "Exported tree:------------------\n\\begin{tikzpicture}[>=Stealth]\n\t\\graph[binaary tree layout]\n\t{"
+#     mid = root.export()
+#     end = "};\n\\end{tikzpicture}"
+#     return head + mid + end
+
 
 def Export(root):
-    head = "Exported tree:------------------\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 2em, draw, circle},\nlevel/.style = {sibling distance = 30mm/#1}\n]\n"
-    mid = f"\\{root.export()}"
+    head = "Exported tree:------------------\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 0em, draw, circle},\nlevel/.style = {sibling distance = 45em/(2^(#1-1))}\n]\n"
+    mid = f"\\{root.export()};"
     end = "\n\\end{tikzpicture}\n--------------------------------"
     return head + mid + end
 
@@ -156,19 +164,12 @@ def DSW_balance_vine(root):
     #Calc number of initial ratations
     w = (n+1).bit_length()-1
     s = n+1-2**w
-    print("s =",s)
     root = perform_rotations(root,s)
+    #Calc the number of rotations in step 2
     s = n-s
-    print("s =",s)
     while s>1:
-        # print(s)
-        # print(Export(root))
         s //= 2
-        if s == 2:
-            print(Export(root))
-        print("----------------")
         root = perform_rotations(root,s)
-        print("-------------")
     return root
 
 
@@ -176,7 +177,7 @@ def Balance(root):
     root = root.tree_to_vine()
     return DSW_balance_vine(root)
 
-    
+ 
 def ArrayToBST(arr):
     root = TreeNode(arr[0])
     for i in arr[1::]:
@@ -194,16 +195,6 @@ def ArrayToAVL(arr):
         root.right = ArrayToAVL(arr[mid+1::]) 
     return root
 
-T = [i for i in range(128,0,-1)]
-Tree = ArrayToBST(T)
-# Tree = ArrayToBST([2,1,4,3])
-print(Export(Tree))
-# Tree.rotateL()
-# print(Export(Tree))
-Tree = Balance(Tree)
-print(Export(Tree))
-# Tree = Tree.balance_vine()
-# Tree.PrintAll()
-# print(x==Tree)
-# print(Tree.Export())
 
+Tree = ArrayToAVL([i for i in range(1,128)])
+print(Export(Tree))
