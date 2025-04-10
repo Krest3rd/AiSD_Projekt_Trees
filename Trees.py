@@ -19,9 +19,9 @@ class TreeNode:
 
     def deleteAll(self):
         if self.left:
-            self.left.delete()
+            self.left.deleteAll()
         if self.right:
-            self.right.delete()
+            self.right.deleteAll()
         print(self.value, end=" ")
         self.value = None
         self.right = None
@@ -125,30 +125,18 @@ def PrintAll(root):
     print("Printing Pre Order")
     root.PreOrder()
 
-# def Export(root):
-#     head = "Exported tree:------------------\n\\begin{tikzpicture}[>=Stealth]\n\t\\graph[binaary tree layout]\n\t{"
-#     mid = root.export()
-#     end = "};\n\\end{tikzpicture}"
-#     return head + mid + end
-
 
 def Export(root):
-    head = "Exported tree:------------------\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 0em, draw, circle},\nlevel/.style = {sibling distance = 45em/(2^(#1-1))}\n]\n"
+    head = "Exported tree:------------------\n\\resizebox{\\linewidth}{!}{\n\\begin{tikzpicture}[\n every node/.style = {minimum width = 0em, draw, circle},\nlevel/.style = {sibling distance = 45em/(2^(#1-1))}\n]\n"
     mid = f"\\{root.export()};"
-    end = "\n\\end{tikzpicture}\n--------------------------------"
+    end = "\n\\end{tikzpicture}\n}\n--------------------------------"
     return head + mid + end
-
-
-def PrintMinMax(root):
-    print("Min: ",root.findMin().value)
-    print("Max: ",root.findMax().value)
 
 
 def DSW_balance_vine(root):
     #funkcja wykonująca rotacje
     def perform_rotations(root, count):
         if count:
-            print(root.value)
             root = root.rotateL()
             root.right = perform_rotations(root.right,count-1)
 
@@ -165,7 +153,7 @@ def DSW_balance_vine(root):
     w = (n+1).bit_length()-1
     s = n+1-2**w
     root = perform_rotations(root,s)
-    #Calc the number of rotations in step 2
+    # Number of rotations in step 2
     s = n-s
     while s>1:
         s //= 2
@@ -177,7 +165,7 @@ def Balance(root):
     root = root.tree_to_vine()
     return DSW_balance_vine(root)
 
- 
+    
 def ArrayToBST(arr):
     root = TreeNode(arr[0])
     for i in arr[1::]:
@@ -194,4 +182,5 @@ def ArrayToAVL(arr):
     if mid != len(arr)-1:
         root.right = ArrayToAVL(arr[mid+1::]) 
     return root
+
 
